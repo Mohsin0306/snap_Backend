@@ -19,7 +19,8 @@ API: `http://localhost:5000/api/health`
    - **Root Directory:** leave empty (repo root is this backend)
    - **Build Command:** `npm install`
    - **Start Command:** `npm start`
-   - **Environment:** Node
+   - **Node version:** **20** (required — Node 18 crashes with `undici` / `File is not defined`)
+   - If Render still uses 18, add env var `NODE_VERSION` = `20`
 4. **Environment variables** (optional):
    - `CORS_ORIGINS` — extra allowed origins, comma-separated (e.g. your WordPress domain if not already listed)
 5. After deploy, set your frontend `SNAP_API_BASE` to:
