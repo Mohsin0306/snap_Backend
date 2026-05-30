@@ -11,6 +11,14 @@ const publicDir = path.join(__dirname, '../public');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+app.use((req, res, next) => {
+  res.setHeader(
+    'Content-Security-Policy',
+    "frame-ancestors 'self' https://sstoryviewer.com https://www.sstoryviewer.com http://sstoryviewer.com http://www.sstoryviewer.com"
+  );
+  next();
+});
+
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions));
 app.use(express.json());
