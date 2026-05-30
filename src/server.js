@@ -20,8 +20,10 @@ app.get('/', (_req, res) => {
   });
 });
 
-const server = app.listen(PORT, () => {
-  console.log(`Snapchat downloader API running on http://localhost:${PORT}`);
+const HOST = process.env.HOST || '0.0.0.0';
+
+const server = app.listen(PORT, HOST, () => {
+  console.log(`Snapchat downloader API listening on ${HOST}:${PORT}`);
 });
 
 server.on('error', (err) => {

@@ -28,6 +28,14 @@ API: `http://localhost:5000/api/health`
 
 Default CORS already allows `sstoryviewer.com` and localhost.
 
+## Deploy on Railway
+
+1. Connect repo **snap_Backend** → deploy
+2. If build still uses Node 18, set variable **`NIXPACKS_NODE_VERSION`** = `20`
+3. Health: `https://YOUR-APP.up.railway.app/api/health`
+
+`undici` is pinned for Node 18 compatibility; Node 20 is still recommended.
+
 ## API
 
 | Method | Path | Description |
