@@ -38,7 +38,7 @@
   const loaderOff = (id) => $(id).classList.remove('on');
   const errShow = (id, msg) => {
     const el = $(id);
-    el.textContent = '⚠️ ' + msg;
+    el.textContent = msg;
     el.classList.remove('hide');
   };
   const errHide = (id) => $(id).classList.add('hide');
@@ -76,7 +76,7 @@
   }
 
   function dlFeedback(btn, orig) {
-    btn.innerHTML = '✓ Done';
+    btn.innerHTML = 'Done';
     btn.style.background = '#48BB78';
     btn.style.color = '#fff';
     setTimeout(() => {
@@ -126,7 +126,7 @@
       card.dataset.label = displayLabel;
       card.innerHTML =
         (isBest ? '<div class="q-best">Best</div>' : '') +
-        '<div class="q-check">✓</div>' +
+        '<div class="q-check">OK</div>' +
         '<div class="q-badge">' + escapeHtml(q.label) + '</div>' +
         '<span class="q-name">Video</span>' +
         '<span class="q-size">' + escapeHtml(q.size || '—') + '</span>';
@@ -135,7 +135,7 @@
         root.querySelectorAll('.q-card').forEach((c) => c.classList.remove('selected'));
         card.classList.add('selected');
         videoState.selectedUrl = card.dataset.url;
-        $('dl-main-btn').textContent = '⬇ Download ' + card.dataset.label;
+        $('dl-main-btn').textContent = 'Download ' + card.dataset.label;
       });
 
       grid.appendChild(card);
@@ -144,7 +144,7 @@
     const best = unique[unique.length - 1];
     videoState.selectedUrl = best.url;
     $('dl-main-btn').textContent =
-      '⬇ Download ' + best.label + (best.size ? ' · ' + best.size : '');
+      'Download ' + best.label + (best.size ? ' - ' + best.size : '');
   }
 
   function showVideoPreview(video) {
@@ -273,7 +273,7 @@
       } else {
         $('p-avatar').style.display = 'none';
         $('p-avatar-fallback').style.display = 'flex';
-        $('p-avatar-fallback').textContent = p.username[0]?.toUpperCase() || '👻';
+        $('p-avatar-fallback').textContent = p.username[0]?.toUpperCase() || 'S';
       }
       $('p-score').textContent = p.subscriberCountFormatted;
       $('p-snaps').textContent = String(p.highlightItemCount ?? 0);
@@ -301,14 +301,14 @@
     a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
     a.download = $('p-handle').textContent.replace('@', '') + '-profile.txt';
     a.click();
-    dlFeedback(this, '⬇ Save Info');
+    dlFeedback(this, 'Save Info');
   });
   $('p-copy').addEventListener('click', function () {
     const url = $('p-result').dataset.profileUrl;
     if (!url) return;
     navigator.clipboard.writeText(url).catch(() => {});
     const o = this.textContent;
-    this.textContent = '✓ Copied!';
+    this.textContent = 'Copied!';
     setTimeout(() => (this.textContent = o), 2000);
   });
 
@@ -360,7 +360,7 @@
     if (!lastScoreText) return;
     navigator.clipboard.writeText(lastScoreText).catch(() => {});
     const o = this.textContent;
-    this.textContent = '✓ Copied!';
+    this.textContent = 'Copied!';
     setTimeout(() => (this.textContent = o), 2000);
   });
 
@@ -398,10 +398,10 @@
             escapeHtml(snap.mediaUrl) +
             '" poster="' +
             escapeHtml(thumb || '') +
-            '" muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video><div class="story-foot"><div class="s-dl">⬇</div></div>'
+            '" muted playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></video><div class="story-foot"><div class="s-dl" title="Download"></div></div>'
           : '<img src="' +
             escapeHtml(thumb) +
-            '" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /><div class="story-foot"><div class="s-dl">⬇</div></div>';
+            '" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" /><div class="story-foot"><div class="s-dl" title="Download"></div></div>';
         item.querySelector('.s-dl').addEventListener('click', (e) => {
           e.stopPropagation();
           window.location.href = getDownloadUrl(snap.mediaUrl);

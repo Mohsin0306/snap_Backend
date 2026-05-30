@@ -19,19 +19,19 @@
 
   <nav class="tabs-bar" role="tablist">
     <button class="tab active" type="button" data-tab="video" role="tab" aria-selected="true">
-      <span class="tab-ico" aria-hidden="true">🎬</span>
+      <span class="tab-ico ico-vid" aria-hidden="true"></span>
       <span class="tab-label">Video</span>
     </button>
     <button class="tab" type="button" data-tab="profile" role="tab">
-      <span class="tab-ico" aria-hidden="true">👤</span>
+      <span class="tab-ico ico-user" aria-hidden="true"></span>
       <span class="tab-label">Profile</span>
     </button>
     <button class="tab" type="button" data-tab="score" role="tab">
-      <span class="tab-ico" aria-hidden="true">⭐</span>
+      <span class="tab-ico ico-star" aria-hidden="true"></span>
       <span class="tab-label">Score</span>
     </button>
     <button class="tab" type="button" data-tab="story" role="tab">
-      <span class="tab-ico" aria-hidden="true">📖</span>
+      <span class="tab-ico ico-story" aria-hidden="true"></span>
       <span class="tab-label">Story</span>
     </button>
   </nav>
@@ -39,17 +39,17 @@
   <section id="panel-video" class="panel active">
     <div class="input-row">
       <div class="inp-wrap">
-        <span class="inp-ico" aria-hidden="true">🔗</span>
-        <input class="inp" id="v-url" type="url" placeholder="Snapchat video URL…" autocomplete="off" />
+        <span class="inp-ico ico-link" aria-hidden="true"></span>
+        <input class="inp" id="v-url" type="url" placeholder="Snapchat video URL..." autocomplete="off" />
         <button class="paste-btn" type="button" id="v-paste">Paste</button>
       </div>
-      <button class="cta" type="button" id="v-btn">▶ Preview</button>
+      <button class="cta" type="button" id="v-btn"><span class="ico-play" aria-hidden="true"></span> Preview</button>
     </div>
     <div class="loader" id="v-load" aria-hidden="true"></div>
-    <div class="alert err hide" id="v-err" role="alert">⚠️ Please enter a valid Snapchat URL.</div>
+    <div class="alert err hide" id="v-err" role="alert"></div>
     <div class="card hide" id="v-result">
       <div class="vid-preview">
-        <div class="play-ring" aria-hidden="true">▶</div>
+        <div class="play-ring"><span class="ico-play-lg" aria-hidden="true"></span></div>
         <p id="v-title">Snapchat Video</p>
       </div>
       <div class="quality-section">
@@ -57,7 +57,7 @@
         <div class="quality-grid" id="quality-grid"></div>
       </div>
       <div class="dl-actions">
-        <button class="dl-main" type="button" id="dl-main-btn">⬇ Download Video</button>
+        <button class="dl-main" type="button" id="dl-main-btn"><span class="ico-dl" aria-hidden="true"></span> Download Video</button>
       </div>
     </div>
   </section>
@@ -65,29 +65,29 @@
   <section id="panel-profile" class="panel">
     <div class="input-row">
       <div class="inp-wrap">
-        <span class="inp-ico" aria-hidden="true">🔍</span>
-        <input class="inp" id="p-user" type="text" placeholder="Username…" autocomplete="off" />
+        <span class="inp-ico ico-search" aria-hidden="true"></span>
+        <input class="inp" id="p-user" type="text" placeholder="Username..." autocomplete="off" />
       </div>
-      <button class="cta" type="button" id="p-btn">👤 View</button>
+      <button class="cta" type="button" id="p-btn">View Profile</button>
     </div>
     <div class="loader" id="p-load" aria-hidden="true"></div>
-    <div class="alert err hide" id="p-err" role="alert">⚠️ Enter a valid username.</div>
+    <div class="alert err hide" id="p-err" role="alert"></div>
     <div class="card hide" id="p-result">
       <div class="profile-wrap">
         <div class="avatar-wrap">
           <img id="p-avatar" class="avatar-img" alt="" width="64" height="64" style="display:none" />
-          <div id="p-avatar-fallback" class="avatar">👻</div>
+          <div id="p-avatar-fallback" class="avatar">S</div>
         </div>
-        <div class="profile-name" id="p-name">—</div>
+        <div class="profile-name" id="p-name">-</div>
         <div class="profile-handle" id="p-handle">@user</div>
         <div class="p-stats">
-          <div class="p-stat"><span class="p-stat-n" id="p-score">—</span><span class="p-stat-l">Subs</span></div>
-          <div class="p-stat"><span class="p-stat-n" id="p-snaps">—</span><span class="p-stat-l">Highlights</span></div>
-          <div class="p-stat"><span class="p-stat-n" id="p-friends">—</span><span class="p-stat-l">Spotlight</span></div>
+          <div class="p-stat"><span class="p-stat-n" id="p-score">-</span><span class="p-stat-l">Subs</span></div>
+          <div class="p-stat"><span class="p-stat-n" id="p-snaps">-</span><span class="p-stat-l">Highlights</span></div>
+          <div class="p-stat"><span class="p-stat-n" id="p-friends">-</span><span class="p-stat-l">Spotlight</span></div>
         </div>
         <div class="p-actions">
-          <button class="dl-btn primary" type="button" id="p-save">⬇ Save</button>
-          <button class="dl-btn ghost" type="button" id="p-copy">📋 Copy</button>
+          <button class="dl-btn primary" type="button" id="p-save">Save Info</button>
+          <button class="dl-btn ghost" type="button" id="p-copy">Copy Link</button>
         </div>
       </div>
     </div>
@@ -96,13 +96,13 @@
   <section id="panel-score" class="panel">
     <div class="input-row">
       <div class="inp-wrap">
-        <span class="inp-ico" aria-hidden="true">⭐</span>
-        <input class="inp" id="sc-user" type="text" placeholder="Username…" autocomplete="off" />
+        <span class="inp-ico ico-star" aria-hidden="true"></span>
+        <input class="inp" id="sc-user" type="text" placeholder="Username..." autocomplete="off" />
       </div>
-      <button class="cta" type="button" id="sc-btn">⭐ Check</button>
+      <button class="cta" type="button" id="sc-btn">Check Score</button>
     </div>
     <div class="loader" id="sc-load" aria-hidden="true"></div>
-    <div class="alert err hide" id="sc-err" role="alert">⚠️ Enter a valid username.</div>
+    <div class="alert err hide" id="sc-err" role="alert"></div>
     <div class="card hide" id="sc-result">
       <div class="score-display">
         <div class="score-ring">
@@ -110,14 +110,14 @@
           <span class="score-lbl">Snap Score</span>
         </div>
         <div class="score-user" id="sc-uname">@user</div>
-        <div class="score-rank" id="sc-rank">—</div>
+        <div class="score-rank" id="sc-rank">-</div>
         <div class="score-breakdown">
-          <div class="breakdown-item"><span>Subscribers</span><span id="sc-sent">—</span></div>
-          <div class="breakdown-item"><span>Account age</span><span id="sc-recv">—</span></div>
-          <div class="breakdown-item"><span>Highlights</span><span id="sc-stories">—</span></div>
-          <div class="breakdown-item"><span>Spotlight</span><span id="sc-age">—</span></div>
+          <div class="breakdown-item"><span>Subscribers</span><span id="sc-sent">-</span></div>
+          <div class="breakdown-item"><span>Account age</span><span id="sc-recv">-</span></div>
+          <div class="breakdown-item"><span>Highlights</span><span id="sc-stories">-</span></div>
+          <div class="breakdown-item"><span>Spotlight</span><span id="sc-age">-</span></div>
         </div>
-        <button class="dl-btn primary" type="button" id="sc-copy">📋 Copy</button>
+        <button class="dl-btn primary" type="button" id="sc-copy">Copy Score</button>
       </div>
     </div>
   </section>
@@ -125,13 +125,13 @@
   <section id="panel-story" class="panel">
     <div class="input-row">
       <div class="inp-wrap">
-        <span class="inp-ico" aria-hidden="true">📖</span>
-        <input class="inp" id="st-user" type="text" placeholder="Username…" autocomplete="off" />
+        <span class="inp-ico ico-story" aria-hidden="true"></span>
+        <input class="inp" id="st-user" type="text" placeholder="Username..." autocomplete="off" />
       </div>
-      <button class="cta" type="button" id="st-btn">📖 Fetch</button>
+      <button class="cta" type="button" id="st-btn">Fetch Stories</button>
     </div>
     <div class="loader" id="st-load" aria-hidden="true"></div>
-    <div class="alert err hide" id="st-err" role="alert">⚠️ Enter a valid username.</div>
+    <div class="alert err hide" id="st-err" role="alert"></div>
     <div id="st-grid" class="story-grid" style="display:none"></div>
   </section>
 
