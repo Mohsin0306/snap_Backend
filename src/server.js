@@ -1,7 +1,12 @@
 import cors from 'cors';
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { corsOptions } from './config/cors.js';
 import apiRouter from './routes/api.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const publicDir = path.join(__dirname, '../public');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -12,12 +17,10 @@ app.use(express.json());
 
 app.use('/api', apiRouter);
 
-app.get('/', (_req, res) => {
-  res.json({
-    ok: true,
-    service: 'snap_Backend',
-    docs: '/api/health',
-  });
+/* Frontend tool (HTML/CSS/JS) — WordPress sirf iframe se embed kare */
+app.use(express.static(publicDir));
+app.get('/tool', (_req, res) => {
+  res.sendFile(path.join(publicDir, 'index.html'));
 });
 
 const HOST = process.env.HOST || '0.0.0.0';

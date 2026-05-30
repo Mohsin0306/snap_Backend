@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Snapchat Tools</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="tool.css" />
+</head>
+<body>
+
+<div
+  id="snap-tools"
+  class="snap-tools"
+  data-api-base="/api"
+>
+
+  <nav class="tabs-bar" role="tablist">
+    <button class="tab active" type="button" data-tab="video" role="tab" aria-selected="true">
+      <span class="tab-ico" aria-hidden="true">🎬</span>
+      <span class="tab-label">Video</span>
+    </button>
+    <button class="tab" type="button" data-tab="profile" role="tab">
+      <span class="tab-ico" aria-hidden="true">👤</span>
+      <span class="tab-label">Profile</span>
+    </button>
+    <button class="tab" type="button" data-tab="score" role="tab">
+      <span class="tab-ico" aria-hidden="true">⭐</span>
+      <span class="tab-label">Score</span>
+    </button>
+    <button class="tab" type="button" data-tab="story" role="tab">
+      <span class="tab-ico" aria-hidden="true">📖</span>
+      <span class="tab-label">Story</span>
+    </button>
+  </nav>
+
+  <section id="panel-video" class="panel active">
+    <div class="input-row">
+      <div class="inp-wrap">
+        <span class="inp-ico" aria-hidden="true">🔗</span>
+        <input class="inp" id="v-url" type="url" placeholder="Snapchat video URL…" autocomplete="off" />
+        <button class="paste-btn" type="button" id="v-paste">Paste</button>
+      </div>
+      <button class="cta" type="button" id="v-btn">▶ Preview</button>
+    </div>
+    <div class="loader" id="v-load" aria-hidden="true"></div>
+    <div class="alert err hide" id="v-err" role="alert">⚠️ Please enter a valid Snapchat URL.</div>
+    <div class="card hide" id="v-result">
+      <div class="vid-preview">
+        <div class="play-ring" aria-hidden="true">▶</div>
+        <p id="v-title">Snapchat Video</p>
+      </div>
+      <div class="quality-section">
+        <div class="quality-label">Select quality</div>
+        <div class="quality-grid" id="quality-grid"></div>
+      </div>
+      <div class="dl-actions">
+        <button class="dl-main" type="button" id="dl-main-btn">⬇ Download Video</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-profile" class="panel">
+    <div class="input-row">
+      <div class="inp-wrap">
+        <span class="inp-ico" aria-hidden="true">🔍</span>
+        <input class="inp" id="p-user" type="text" placeholder="Username…" autocomplete="off" />
+      </div>
+      <button class="cta" type="button" id="p-btn">👤 View</button>
+    </div>
+    <div class="loader" id="p-load" aria-hidden="true"></div>
+    <div class="alert err hide" id="p-err" role="alert">⚠️ Enter a valid username.</div>
+    <div class="card hide" id="p-result">
+      <div class="profile-wrap">
+        <div class="avatar-wrap">
+          <img id="p-avatar" class="avatar-img" alt="" width="64" height="64" style="display:none" />
+          <div id="p-avatar-fallback" class="avatar">👻</div>
+        </div>
+        <div class="profile-name" id="p-name">—</div>
+        <div class="profile-handle" id="p-handle">@user</div>
+        <div class="p-stats">
+          <div class="p-stat"><span class="p-stat-n" id="p-score">—</span><span class="p-stat-l">Subs</span></div>
+          <div class="p-stat"><span class="p-stat-n" id="p-snaps">—</span><span class="p-stat-l">Highlights</span></div>
+          <div class="p-stat"><span class="p-stat-n" id="p-friends">—</span><span class="p-stat-l">Spotlight</span></div>
+        </div>
+        <div class="p-actions">
+          <button class="dl-btn primary" type="button" id="p-save">⬇ Save</button>
+          <button class="dl-btn ghost" type="button" id="p-copy">📋 Copy</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-score" class="panel">
+    <div class="input-row">
+      <div class="inp-wrap">
+        <span class="inp-ico" aria-hidden="true">⭐</span>
+        <input class="inp" id="sc-user" type="text" placeholder="Username…" autocomplete="off" />
+      </div>
+      <button class="cta" type="button" id="sc-btn">⭐ Check</button>
+    </div>
+    <div class="loader" id="sc-load" aria-hidden="true"></div>
+    <div class="alert err hide" id="sc-err" role="alert">⚠️ Enter a valid username.</div>
+    <div class="card hide" id="sc-result">
+      <div class="score-display">
+        <div class="score-ring">
+          <span class="score-num" id="sc-num">0</span>
+          <span class="score-lbl">Snap Score</span>
+        </div>
+        <div class="score-user" id="sc-uname">@user</div>
+        <div class="score-rank" id="sc-rank">—</div>
+        <div class="score-breakdown">
+          <div class="breakdown-item"><span>Subscribers</span><span id="sc-sent">—</span></div>
+          <div class="breakdown-item"><span>Account age</span><span id="sc-recv">—</span></div>
+          <div class="breakdown-item"><span>Highlights</span><span id="sc-stories">—</span></div>
+          <div class="breakdown-item"><span>Spotlight</span><span id="sc-age">—</span></div>
+        </div>
+        <button class="dl-btn primary" type="button" id="sc-copy">📋 Copy</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-story" class="panel">
+    <div class="input-row">
+      <div class="inp-wrap">
+        <span class="inp-ico" aria-hidden="true">📖</span>
+        <input class="inp" id="st-user" type="text" placeholder="Username…" autocomplete="off" />
+      </div>
+      <button class="cta" type="button" id="st-btn">📖 Fetch</button>
+    </div>
+    <div class="loader" id="st-load" aria-hidden="true"></div>
+    <div class="alert err hide" id="st-err" role="alert">⚠️ Enter a valid username.</div>
+    <div id="st-grid" class="story-grid" style="display:none"></div>
+  </section>
+
+</div>
+
+<script src="tool.js" defer></script>
+</body>
+</html>
