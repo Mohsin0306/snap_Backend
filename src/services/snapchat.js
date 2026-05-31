@@ -14,9 +14,78 @@ const SNAP_MEDIA_TYPES = {
 
 function buildSpotlightPageUrl(input, pathSuffix) {
   if (input.startsWith('http')) {
-    return input.trim();
+    try {
+      const u = new URL(input.trim());
+      u.search = '';
+      u.hash = '';
+      return u.toString();
+    } catch {
+      return input.trim();
+    }
   }
   return `https://www.snapchat.com/${pathSuffix}`;
+}
+
+const SNAP_HTTP_HEADERS = {
+  'User-Agent': USER_AGENT,
+  Accept: 'text/html,application/xhtml+xml',
+  'Accept-Language': 'en-US,en;q=0.9',
+};
+
+/** Resolve snapchat.com/t/… share links to the final Spotlight URL. */
+export async function expandSnapchatUrl(input) {
+  let value = input.trim();
+  if (!value) return value;
+
+  if (!/^https?:\/\//i.test(value)) {
+    value = /^t\//i.test(value)
+      ? `https://www.snapchat.com/${value}`
+      : `https://www.snapchat.com/t/${value}`;
+  }
+
+  try {
+    const parsed = new URL(value);
+    if (!parsed.hostname.includes('snapchat.com')) return value;
+    if (!/^\/t\/[A-Za-z0-9_-]+/i.test(parsed.pathname)) return value;
+    if (!parsed.hostname.startsWith('www.')) {
+      parsed.hostname = `www.${parsed.hostname.replace(/^www\./, '')}`;
+      value = parsed.toString();
+    }
+  } catch {
+    return value;
+  }
+
+  try {
+    const response = await axios.get(value, {
+      headers: SNAP_HTTP_HEADERS,
+      maxRedirects: 10,
+      timeout: 30000,
+      validateStatus: (status) => status >= 200 && status < 400,
+    });
+
+    const finalUrl =
+      response.request?.res?.responseUrl ||
+      response.request?.responseURL ||
+      response.config?.url ||
+      value;
+
+    return String(finalUrl).split('#')[0];
+  } catch (err) {
+    const status = err.response?.status;
+    if (status === 404) {
+      throw new Error('Snapchat share link not found or expired.');
+    }
+    throw new Error(err.message || 'Could not open Snapchat link.');
+  }
+}
+
+export async function prepareInput(input) {
+  if (!input || typeof input !== 'string') return input;
+  const trimmed = input.trim();
+  if (/snapchat\.com\/t\//i.test(trimmed) || /^t\/[A-Za-z0-9_-]+$/i.test(trimmed)) {
+    return expandSnapchatUrl(trimmed);
+  }
+  return trimmed;
 }
 
 function detectMediaType(snap) {
@@ -53,6 +122,10 @@ export function parseInput(input) {
     return { type: 'spotlight', username: null, spotlightId, pageUrl };
   }
 
+  if (/snapchat\.com\/t\/[A-Za-z0-9_-]+/i.test(value)) {
+    return { type: 'shortlink', raw: value };
+  }
+
   const username = normalizeUsername(value);
   if (username) return { type: 'profile', username };
 
@@ -66,9 +139,13 @@ export function normalizeUsername(input) {
   if (!value) return null;
 
   if (/snapchat\.com\/(?:@[^/]+\/)?spotlight\//i.test(value)) return null;
+  if (/snapchat\.com\/t\//i.test(value)) return null;
+  if (/^t\/[A-Za-z0-9_-]+$/i.test(value)) return null;
 
   const urlMatch = value.match(/snapchat\.com\/(?:add|@)\/([^/?#]+)/i);
-  if (urlMatch) value = urlMatch[1];
+  if (urlMatch) return urlMatch[1].replace(/^@/, '').trim() || null;
+
+  if (/snapchat\.com/i.test(value) || /^https?:\/\//i.test(value)) return null;
 
   value = value.replace(/^@/, '').split(/[/?#]/)[0].trim();
   return value || null;
@@ -224,15 +301,20 @@ function extractPublicProfile(userProfile) {
 }
 
 async function fetchPagePropsFromUrl(pageUrl) {
-  const { data: html } = await axios.get(pageUrl, {
-    headers: {
-      'User-Agent': USER_AGENT,
-      Accept: 'text/html,application/xhtml+xml',
-      'Accept-Language': 'en-US,en;q=0.9',
-    },
-    maxRedirects: 5,
-    timeout: 30000,
-  });
+  let html;
+  try {
+    ({ data: html } = await axios.get(pageUrl, {
+      headers: SNAP_HTTP_HEADERS,
+      maxRedirects: 5,
+      timeout: 30000,
+    }));
+  } catch (err) {
+    const status = err.response?.status;
+    if (status === 404) {
+      throw new Error('Snapchat page not found. The video may be removed or the link expired.');
+    }
+    throw new Error(err.message || 'Could not load Snapchat page.');
+  }
 
   const $ = cheerio.load(html);
   const nextDataScript = $('#__NEXT_DATA__').html();
@@ -328,9 +410,10 @@ function rejectSpotlightForMode(mode) {
 }
 
 export async function resolveVideos(input) {
-  const parsed = parseInput(input);
-  if (!parsed) {
-    throw new Error('Enter a username, profile URL, or Spotlight link.');
+  const prepared = await prepareInput(input);
+  const parsed = parseInput(prepared);
+  if (!parsed || parsed.type === 'shortlink') {
+    throw new Error('Enter a username, profile URL, Spotlight link, or snapchat.com/t/ share link.');
   }
 
   if (parsed.type === 'spotlight') {
@@ -385,12 +468,13 @@ export async function resolveVideos(input) {
 }
 
 export async function resolveProfile(input) {
-  const parsed = parseInput(input);
+  const prepared = await prepareInput(input);
+  const parsed = parseInput(prepared);
   if (parsed?.type === 'spotlight') {
     return rejectSpotlightForMode('profile');
   }
 
-  const username = normalizeUsername(input);
+  const username = normalizeUsername(prepared);
   if (!username) {
     throw new Error('Enter a valid Snapchat username or profile URL.');
   }
@@ -420,12 +504,13 @@ export async function resolveProfile(input) {
 }
 
 export async function resolveScore(input) {
-  const parsed = parseInput(input);
+  const prepared = await prepareInput(input);
+  const parsed = parseInput(prepared);
   if (parsed?.type === 'spotlight') {
     return rejectSpotlightForMode('score');
   }
 
-  const username = normalizeUsername(input);
+  const username = normalizeUsername(prepared);
   if (!username) {
     throw new Error('Enter a valid Snapchat username or profile URL.');
   }
@@ -473,12 +558,13 @@ export async function resolveScore(input) {
 }
 
 export async function resolveStories(input) {
-  const parsed = parseInput(input);
+  const prepared = await prepareInput(input);
+  const parsed = parseInput(prepared);
   if (parsed?.type === 'spotlight') {
     return rejectSpotlightForMode('story');
   }
 
-  const username = normalizeUsername(input);
+  const username = normalizeUsername(prepared);
   if (!username) {
     throw new Error('Enter a valid Snapchat username or profile URL.');
   }
@@ -514,13 +600,14 @@ export async function resolveStories(input) {
 }
 
 export async function resolveMedia(input) {
-  const parsed = parseInput(input);
-  if (!parsed) {
-    throw new Error('Enter a username, profile URL, or Spotlight link.');
+  const prepared = await prepareInput(input);
+  const parsed = parseInput(prepared);
+  if (!parsed || parsed.type === 'shortlink') {
+    throw new Error('Enter a username, profile URL, Spotlight link, or snapchat.com/t/ share link.');
   }
 
   if (parsed.type === 'spotlight') {
-    const videoResult = await resolveVideos(input);
+    const videoResult = await resolveVideos(prepared);
     if (!videoResult.found) return videoResult;
 
     const pageProps = await fetchPagePropsFromUrl(parsed.pageUrl);
