@@ -6,6 +6,7 @@
 
   const root = document.getElementById(ROOT_ID);
   if (!root) return;
+  root.classList.add('snap-ready');
 
   function resolveApiBase() {
     const fromAttr = root.getAttribute('data-api-base');
@@ -419,23 +420,51 @@
   $('st-btn').addEventListener('click', doStory);
   $('st-user').addEventListener('keydown', (e) => e.key === 'Enter' && doStory());
 
-  function notifyParentHeight() {
-    if (window.parent === window) return;
-    const h = Math.max(
-      document.documentElement.scrollHeight,
-      document.body.scrollHeight,
-      root.offsetHeight || 0
-    );
-    window.parent.postMessage({ type: 'snap-tools-resize', height: h + 32 }, '*');
+  let lastReportedHeight = 0;
+
+  function measureToolHeight() {
+    const rect = root.getBoundingClientRect();
+    const top = rect.top + window.scrollY;
+    const bottom = rect.bottom + window.scrollY;
+    return Math.ceil(bottom - top + 2);
   }
 
-  notifyParentHeight();
-  window.addEventListener('load', notifyParentHeight);
-  window.addEventListener('resize', notifyParentHeight);
+  function notifyParentHeight() {
+    if (window.parent === window) return;
+
+    document.documentElement.style.height = 'auto';
+    document.body.style.height = 'auto';
+
+    const h = measureToolHeight();
+    if (!h || h < 200 || Math.abs(h - lastReportedHeight) < 2) return;
+
+    lastReportedHeight = h;
+    window.parent.postMessage({ type: 'snap-tools-resize', height: h }, '*');
+  }
+
+  let resizeTimer;
+  function scheduleHeightNotify() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(notifyParentHeight, 60);
+  }
+
+  window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'snap-tools-request-height') notifyParentHeight();
+  });
+
+  function bootHeightSync() {
+    notifyParentHeight();
+    requestAnimationFrame(notifyParentHeight);
+  }
+
+  bootHeightSync();
+  if (document.readyState === 'complete') bootHeightSync();
+  else window.addEventListener('load', bootHeightSync, { once: true });
+  window.addEventListener('resize', scheduleHeightNotify);
   if (typeof ResizeObserver !== 'undefined') {
-    new ResizeObserver(notifyParentHeight).observe(root);
+    new ResizeObserver(scheduleHeightNotify).observe(root);
   }
   root.querySelectorAll('.tab').forEach((btn) => {
-    btn.addEventListener('click', () => setTimeout(notifyParentHeight, 350));
+    btn.addEventListener('click', () => setTimeout(scheduleHeightNotify, 450));
   });
 })();

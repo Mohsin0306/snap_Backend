@@ -1,11 +1,11 @@
-/* Snapchat Tools — modern light card layout */
-
 html:has(#snap-tools),
 html:has(#snap-tools) body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow: hidden;
   height: auto;
+  min-height: 0;
+  background: #0c0f14;
 }
 
 .snap-tools {
@@ -29,8 +29,12 @@ html:has(#snap-tools) body {
   width: 100%;
   max-width: none;
   min-height: auto;
-  padding: 48px 20px 56px;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  padding: 20px 16px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color: var(--text);
   background: var(--bg-dark);
   background-image:
@@ -55,9 +59,10 @@ html:has(#snap-tools) body {
 /* ── Hero ── */
 .snap-tools .snap-hero {
   text-align: center;
+  width: 100%;
   max-width: 920px;
-  margin: 0 auto 32px;
-  padding: 0 8px;
+  margin: 0 auto 28px;
+  padding: 0 12px;
 }
 
 .snap-tools .snap-hero-title {
@@ -77,32 +82,55 @@ html:has(#snap-tools) body {
 }
 
 /* ── White card ── */
+.snap-tools:not(.snap-ready) .snap-card {
+  min-height: 200px;
+  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
+  background-size: 200% 100%;
+  animation: snapShimmer 1s ease-in-out infinite;
+}
+
+.snap-tools.snap-ready .snap-card {
+  animation: none;
+  background: var(--card);
+}
+
+@keyframes snapShimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
 .snap-tools .snap-card {
+  width: 100%;
   max-width: 960px;
   margin: 0 auto;
   background: var(--card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .snap-tools .tabs-bar {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 0;
-  padding: 0 20px;
+  padding: 0 12px;
   border-bottom: 1px solid var(--border);
-  overflow-x: auto;
-  scrollbar-width: thin;
-  -webkit-overflow-scrolling: touch;
+  overflow: visible;
+  scrollbar-width: none;
+}
+
+.snap-tools .tabs-bar::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .snap-tools .tab {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 18px 16px;
+  padding: 16px 12px;
   margin: 0;
   background: none;
   border: none;
@@ -158,6 +186,9 @@ html:has(#snap-tools) body {
   align-items: stretch;
   gap: 12px;
   justify-content: center;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
 }
 
 .snap-tools .inp-wrap {
@@ -669,32 +700,65 @@ html:has(#snap-tools) body {
   }
 }
 
-/* ── Mobile: tab NAMES always visible, horizontal scroll ── */
+/* ── Mobile: 2x2 tabs, no scrollbar, tight fit ── */
 @media (max-width: 540px) {
   .snap-tools {
-    padding: 24px 10px 32px;
+    padding: 32px 12px 36px;
+    justify-content: center;
   }
 
   .snap-tools .snap-hero {
-    margin-bottom: 20px;
-  }
-
-  .snap-tools .tabs-bar {
+    margin-bottom: 16px;
     padding: 0 8px;
   }
 
+  .snap-tools .snap-hero-title {
+    font-size: 1.15rem;
+  }
+
+  .snap-tools .snap-hero-tag {
+    font-size: 1rem;
+  }
+
+  .snap-tools .snap-card {
+    border-radius: 16px;
+  }
+
+  .snap-tools .tabs-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 0;
+    overflow: visible;
+  }
+
   .snap-tools .tab {
-    padding: 14px 10px;
-    font-size: 0.72rem;
-    min-width: max-content;
+    flex: none;
+    width: 100%;
+    padding: 12px 8px;
+    font-size: 0.68rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  .snap-tools .tab:nth-child(odd) {
+    border-right: 1px solid var(--border);
+  }
+
+  .snap-tools .tab.active {
+    background: var(--yellow-soft);
   }
 
   .snap-tools .tab-label {
     display: inline !important;
     visibility: visible !important;
-    opacity: 1 !important;
-    font-size: 0.72rem !important;
-    white-space: nowrap;
+    font-size: 0.68rem !important;
+    white-space: normal;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .snap-tools .snap-card-body {
+    padding: 18px 14px 20px;
   }
 
   .snap-tools .input-row {

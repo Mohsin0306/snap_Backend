@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>Snapchat Tools</title>
+  <title>Snapchat Story Viewer &amp; Downloader</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="tool.css" />
 </head>
 <body>
@@ -17,123 +17,127 @@
   data-api-base="https://snapbackend-production.up.railway.app/api"
 >
 
-  <nav class="tabs-bar" role="tablist">
-    <button class="tab active" type="button" data-tab="video" data-label="Video" role="tab" aria-selected="true">
-      <span class="tab-ico ico-vid" aria-hidden="true"></span>
-      <span class="tab-label">Video</span>
-    </button>
-    <button class="tab" type="button" data-tab="profile" data-label="Profile" role="tab">
-      <span class="tab-ico ico-user" aria-hidden="true"></span>
-      <span class="tab-label">Profile</span>
-    </button>
-    <button class="tab" type="button" data-tab="score" data-label="Score" role="tab">
-      <span class="tab-ico ico-star" aria-hidden="true"></span>
-      <span class="tab-label">Score</span>
-    </button>
-    <button class="tab" type="button" data-tab="story" data-label="Story" role="tab">
-      <span class="tab-ico ico-story" aria-hidden="true"></span>
-      <span class="tab-label">Story</span>
-    </button>
-  </nav>
+  <header class="snap-hero">
+    <h1 class="snap-hero-title">Snapchat Story Viewer Video Downloader, &amp; Profile Analyzer</h1>
+    <p class="snap-hero-tag">Free 2026</p>
+  </header>
 
-  <section id="panel-video" class="panel active">
-    <div class="input-row">
-      <div class="inp-wrap">
-        <span class="inp-ico ico-link" aria-hidden="true"></span>
-        <input class="inp" id="v-url" type="url" placeholder="Snapchat video URL..." autocomplete="off" />
-        <button class="paste-btn" type="button" id="v-paste">Paste</button>
-      </div>
-      <button class="cta" type="button" id="v-btn"><span class="ico-play" aria-hidden="true"></span> Preview</button>
-    </div>
-    <div class="loader" id="v-load" aria-hidden="true"></div>
-    <div class="alert err hide" id="v-err" role="alert"></div>
-    <div class="card hide" id="v-result">
-      <div class="vid-preview">
-        <div class="play-ring"><span class="ico-play-lg" aria-hidden="true"></span></div>
-        <p id="v-title">Snapchat Video</p>
-      </div>
-      <div class="quality-section">
-        <div class="quality-label">Select quality</div>
-        <div class="quality-grid" id="quality-grid"></div>
-      </div>
-      <div class="dl-actions">
-        <button class="dl-main" type="button" id="dl-main-btn"><span class="ico-dl" aria-hidden="true"></span> Download Video</button>
-      </div>
-    </div>
-  </section>
+  <div class="snap-card">
+    <nav class="tabs-bar" role="tablist">
+      <button class="tab active" type="button" data-tab="video" role="tab" aria-selected="true">
+        <span class="tab-label">Video Downloader</span>
+      </button>
+      <button class="tab" type="button" data-tab="profile" role="tab">
+        <span class="tab-label">Profile Viewer</span>
+      </button>
+      <button class="tab" type="button" data-tab="score" role="tab">
+        <span class="tab-label">Snap Score</span>
+      </button>
+      <button class="tab" type="button" data-tab="story" role="tab">
+        <span class="tab-label">Story Downloader</span>
+      </button>
+    </nav>
 
-  <section id="panel-profile" class="panel">
-    <div class="input-row">
-      <div class="inp-wrap">
-        <span class="inp-ico ico-search" aria-hidden="true"></span>
-        <input class="inp" id="p-user" type="text" placeholder="Username..." autocomplete="off" />
-      </div>
-      <button class="cta" type="button" id="p-btn">View Profile</button>
-    </div>
-    <div class="loader" id="p-load" aria-hidden="true"></div>
-    <div class="alert err hide" id="p-err" role="alert"></div>
-    <div class="card hide" id="p-result">
-      <div class="profile-wrap">
-        <div class="avatar-wrap">
-          <img id="p-avatar" class="avatar-img" alt="" width="64" height="64" style="display:none" />
-          <div id="p-avatar-fallback" class="avatar">S</div>
+    <div class="snap-card-body">
+      <section id="panel-video" class="panel active">
+        <div class="input-row">
+          <div class="inp-wrap">
+            <input class="inp" id="v-url" type="url" placeholder="Enter Snapchat Video URL..." autocomplete="off" />
+            <button class="paste-btn" type="button" id="v-paste">Paste</button>
+          </div>
+          <button class="cta" type="button" id="v-btn">
+            <span class="cta-ico ico-vid-sm" aria-hidden="true"></span>
+            Preview Video
+          </button>
         </div>
-        <div class="profile-name" id="p-name">-</div>
-        <div class="profile-handle" id="p-handle">@user</div>
-        <div class="p-stats">
-          <div class="p-stat"><span class="p-stat-n" id="p-score">-</span><span class="p-stat-l">Subs</span></div>
-          <div class="p-stat"><span class="p-stat-n" id="p-snaps">-</span><span class="p-stat-l">Highlights</span></div>
-          <div class="p-stat"><span class="p-stat-n" id="p-friends">-</span><span class="p-stat-l">Spotlight</span></div>
+        <div class="loader" id="v-load" aria-hidden="true"></div>
+        <div class="alert err hide" id="v-err" role="alert"></div>
+        <div class="card hide" id="v-result">
+          <div class="vid-preview">
+            <div class="play-ring"><span class="ico-play-lg" aria-hidden="true"></span></div>
+            <p id="v-title">Snapchat Video</p>
+          </div>
+          <div class="quality-section">
+            <div class="quality-label">Select download quality</div>
+            <div class="quality-grid" id="quality-grid"></div>
+          </div>
+          <div class="dl-actions">
+            <button class="dl-main" type="button" id="dl-main-btn">Download Video</button>
+          </div>
         </div>
-        <div class="p-actions">
-          <button class="dl-btn primary" type="button" id="p-save">Save Info</button>
-          <button class="dl-btn ghost" type="button" id="p-copy">Copy Link</button>
-        </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <section id="panel-score" class="panel">
-    <div class="input-row">
-      <div class="inp-wrap">
-        <span class="inp-ico ico-star" aria-hidden="true"></span>
-        <input class="inp" id="sc-user" type="text" placeholder="Username..." autocomplete="off" />
-      </div>
-      <button class="cta" type="button" id="sc-btn">Check Score</button>
-    </div>
-    <div class="loader" id="sc-load" aria-hidden="true"></div>
-    <div class="alert err hide" id="sc-err" role="alert"></div>
-    <div class="card hide" id="sc-result">
-      <div class="score-display">
-        <div class="score-ring">
-          <span class="score-num" id="sc-num">0</span>
-          <span class="score-lbl">Snap Score</span>
+      <section id="panel-profile" class="panel">
+        <div class="input-row">
+          <div class="inp-wrap">
+            <input class="inp" id="p-user" type="text" placeholder="Enter Snapchat username..." autocomplete="off" />
+          </div>
+          <button class="cta" type="button" id="p-btn">View Profile</button>
         </div>
-        <div class="score-user" id="sc-uname">@user</div>
-        <div class="score-rank" id="sc-rank">-</div>
-        <div class="score-breakdown">
-          <div class="breakdown-item"><span>Subscribers</span><span id="sc-sent">-</span></div>
-          <div class="breakdown-item"><span>Account age</span><span id="sc-recv">-</span></div>
-          <div class="breakdown-item"><span>Highlights</span><span id="sc-stories">-</span></div>
-          <div class="breakdown-item"><span>Spotlight</span><span id="sc-age">-</span></div>
+        <div class="loader" id="p-load" aria-hidden="true"></div>
+        <div class="alert err hide" id="p-err" role="alert"></div>
+        <div class="card hide" id="p-result">
+          <div class="profile-wrap">
+            <div class="avatar-wrap">
+              <img id="p-avatar" class="avatar-img" alt="" width="72" height="72" style="display:none" />
+              <div id="p-avatar-fallback" class="avatar">S</div>
+            </div>
+            <div class="profile-name" id="p-name">-</div>
+            <div class="profile-handle" id="p-handle">@user</div>
+            <div class="p-stats">
+              <div class="p-stat"><span class="p-stat-n" id="p-score">-</span><span class="p-stat-l">Subscribers</span></div>
+              <div class="p-stat"><span class="p-stat-n" id="p-snaps">-</span><span class="p-stat-l">Highlights</span></div>
+              <div class="p-stat"><span class="p-stat-n" id="p-friends">-</span><span class="p-stat-l">Spotlight</span></div>
+            </div>
+            <div class="p-actions">
+              <button class="dl-btn primary" type="button" id="p-save">Save Info</button>
+              <button class="dl-btn ghost" type="button" id="p-copy">Copy Link</button>
+            </div>
+          </div>
         </div>
-        <button class="dl-btn primary" type="button" id="sc-copy">Copy Score</button>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <section id="panel-story" class="panel">
-    <div class="input-row">
-      <div class="inp-wrap">
-        <span class="inp-ico ico-story" aria-hidden="true"></span>
-        <input class="inp" id="st-user" type="text" placeholder="Username..." autocomplete="off" />
-      </div>
-      <button class="cta" type="button" id="st-btn">Fetch Stories</button>
+      <section id="panel-score" class="panel">
+        <div class="input-row">
+          <div class="inp-wrap">
+            <input class="inp" id="sc-user" type="text" placeholder="Enter Snapchat username..." autocomplete="off" />
+          </div>
+          <button class="cta" type="button" id="sc-btn">Check Score</button>
+        </div>
+        <div class="loader" id="sc-load" aria-hidden="true"></div>
+        <div class="alert err hide" id="sc-err" role="alert"></div>
+        <div class="card hide" id="sc-result">
+          <div class="score-display">
+            <div class="score-ring">
+              <span class="score-num" id="sc-num">0</span>
+              <span class="score-lbl">Snap Score</span>
+            </div>
+            <div class="score-user" id="sc-uname">@user</div>
+            <div class="score-rank" id="sc-rank">-</div>
+            <div class="score-breakdown">
+              <div class="breakdown-item"><span>Subscribers</span><span id="sc-sent">-</span></div>
+              <div class="breakdown-item"><span>Account age</span><span id="sc-recv">-</span></div>
+              <div class="breakdown-item"><span>Highlights</span><span id="sc-stories">-</span></div>
+              <div class="breakdown-item"><span>Spotlight</span><span id="sc-age">-</span></div>
+            </div>
+            <button class="dl-btn primary" type="button" id="sc-copy">Copy Score</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="panel-story" class="panel">
+        <div class="input-row">
+          <div class="inp-wrap">
+            <input class="inp" id="st-user" type="text" placeholder="Enter Snapchat username..." autocomplete="off" />
+          </div>
+          <button class="cta" type="button" id="st-btn">Fetch Stories</button>
+        </div>
+        <div class="loader" id="st-load" aria-hidden="true"></div>
+        <div class="alert err hide" id="st-err" role="alert"></div>
+        <div id="st-grid" class="story-grid" style="display:none"></div>
+      </section>
     </div>
-    <div class="loader" id="st-load" aria-hidden="true"></div>
-    <div class="alert err hide" id="st-err" role="alert"></div>
-    <div id="st-grid" class="story-grid" style="display:none"></div>
-  </section>
+  </div>
 
 </div>
 
