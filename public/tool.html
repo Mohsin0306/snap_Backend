@@ -42,9 +42,9 @@
             Preview Video
           </button>
         </div>
-        <div class="loader" id="v-load" aria-hidden="true"></div>
-        <div class="alert err hide" id="v-err" role="alert"></div>
-        <div class="card hide" id="v-result">
+        <div class="loader" id="v-load" aria-hidden="true" hidden></div>
+        <div class="alert err hide" id="v-err" role="alert" hidden></div>
+        <div class="card hide" id="v-result" hidden>
           <div class="vid-preview">
             <div class="play-ring"><span class="ico-play-lg" aria-hidden="true"></span></div>
             <p id="v-title">Snapchat Video</p>
@@ -59,16 +59,16 @@
         </div>
       </section>
 
-      <section id="panel-profile" class="panel">
+      <section id="panel-profile" class="panel" hidden>
         <div class="input-row">
           <div class="inp-wrap">
             <input class="inp" id="p-user" type="text" placeholder="Enter Snapchat username..." autocomplete="off" />
           </div>
           <button class="cta" type="button" id="p-btn">View Profile</button>
         </div>
-        <div class="loader" id="p-load" aria-hidden="true"></div>
-        <div class="alert err hide" id="p-err" role="alert"></div>
-        <div class="card hide" id="p-result">
+        <div class="loader" id="p-load" aria-hidden="true" hidden></div>
+        <div class="alert err hide" id="p-err" role="alert" hidden></div>
+        <div class="card hide" id="p-result" hidden>
           <div class="profile-wrap">
             <div class="avatar-wrap">
               <img id="p-avatar" class="avatar-img" alt="" width="72" height="72" style="display:none" />
@@ -89,16 +89,16 @@
         </div>
       </section>
 
-      <section id="panel-score" class="panel">
+      <section id="panel-score" class="panel" hidden>
         <div class="input-row">
           <div class="inp-wrap">
             <input class="inp" id="sc-user" type="text" placeholder="Enter Snapchat username..." autocomplete="off" />
           </div>
           <button class="cta" type="button" id="sc-btn">Check Score</button>
         </div>
-        <div class="loader" id="sc-load" aria-hidden="true"></div>
-        <div class="alert err hide" id="sc-err" role="alert"></div>
-        <div class="card hide" id="sc-result">
+        <div class="loader" id="sc-load" aria-hidden="true" hidden></div>
+        <div class="alert err hide" id="sc-err" role="alert" hidden></div>
+        <div class="card hide" id="sc-result" hidden>
           <div class="score-display">
             <div class="score-ring">
               <span class="score-num" id="sc-num">0</span>
@@ -117,15 +117,15 @@
         </div>
       </section>
 
-      <section id="panel-story" class="panel">
+      <section id="panel-story" class="panel" hidden>
         <div class="input-row">
           <div class="inp-wrap">
             <input class="inp" id="st-user" type="text" placeholder="Enter Snapchat username..." autocomplete="off" />
           </div>
           <button class="cta" type="button" id="st-btn">Fetch Stories</button>
         </div>
-        <div class="loader" id="st-load" aria-hidden="true"></div>
-        <div class="alert err hide" id="st-err" role="alert"></div>
+        <div class="loader" id="st-load" aria-hidden="true" hidden></div>
+        <div class="alert err hide" id="st-err" role="alert" hidden></div>
         <div id="st-grid" class="story-grid" style="display:none"></div>
       </section>
     </div>

@@ -7,6 +7,10 @@
   overflow: visible;
 }
 
+.snap-tools [hidden] {
+  display: none !important;
+}
+
 .snap-tools {
   --yellow: #fcc101;
   --yellow-hover: #e6ad00;

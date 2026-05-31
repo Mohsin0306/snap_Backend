@@ -90,21 +90,49 @@
   root.querySelectorAll('.tab').forEach((btn) => {
     btn.addEventListener('click', () => {
       root.querySelectorAll('.tab').forEach((b) => b.classList.remove('active'));
-      root.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+      root.querySelectorAll('.panel').forEach((p) => {
+        p.classList.remove('active');
+        p.hidden = true;
+      });
       btn.classList.add('active');
-      $('panel-' + btn.dataset.tab).classList.add('active');
+      const panel = $('panel-' + btn.dataset.tab);
+      panel.classList.add('active');
+      panel.hidden = false;
       setTimeout(scheduleHeightBurst, 80);
     });
   });
 
-  const loaderOn = (id) => $(id).classList.add('on');
-  const loaderOff = (id) => $(id).classList.remove('on');
+  const loaderOn = (id) => {
+    const el = $(id);
+    el.classList.add('on');
+    el.hidden = false;
+  };
+  const loaderOff = (id) => {
+    const el = $(id);
+    el.classList.remove('on');
+    el.hidden = true;
+  };
   const errShow = (id, msg) => {
     const el = $(id);
     el.textContent = msg;
     el.classList.remove('hide');
+    el.hidden = false;
   };
-  const errHide = (id) => $(id).classList.add('hide');
+  const errHide = (id) => {
+    const el = $(id);
+    el.classList.add('hide');
+    el.hidden = true;
+  };
+  const showEl = (id) => {
+    const el = $(id);
+    el.classList.remove('hide');
+    el.hidden = false;
+  };
+  const hideEl = (id) => {
+    const el = $(id);
+    el.classList.add('hide');
+    el.hidden = true;
+  };
 
   async function apiGet(path) {
     const res = await fetch(API + path);
@@ -249,7 +277,7 @@
   async function doVideo() {
     const input = $('v-url').value.trim();
     errHide('v-err');
-    $('v-result').classList.add('hide');
+    hideEl('v-result');
     videoState = { videos: [], qualities: [], selectedUrl: '' };
 
     if (!input) {
@@ -292,7 +320,7 @@
       }
 
       renderQualityGrid(qualities);
-      $('v-result').classList.remove('hide');
+      showEl('v-result');
     } catch (e) {
       errShow('v-err', e.message || 'API error. Check backend URL.');
     } finally {
@@ -319,7 +347,7 @@
   async function doProfile() {
     const input = $('p-user').value.trim();
     errHide('p-err');
-    $('p-result').classList.add('hide');
+    hideEl('p-result');
     if (input.length < 2) {
       errShow('p-err', 'Enter a valid username.');
       return;
@@ -347,7 +375,7 @@
       $('p-snaps').textContent = String(p.highlightItemCount ?? 0);
       $('p-friends').textContent = p.hasSpotlight ? 'Yes' : '—';
       $('p-result').dataset.profileUrl = p.profileUrl;
-      $('p-result').classList.remove('hide');
+      showEl('p-result');
     } catch (e) {
       errShow('p-err', e.message);
     } finally {
@@ -385,7 +413,7 @@
   async function doScore() {
     const input = $('sc-user').value.trim();
     errHide('sc-err');
-    $('sc-result').classList.add('hide');
+    hideEl('sc-result');
     if (input.length < 2) {
       errShow('sc-err', 'Enter a valid username.');
       return;
@@ -413,7 +441,7 @@
         data.ring.label +
         ': ' +
         data.ring.value;
-      $('sc-result').classList.remove('hide');
+      showEl('sc-result');
       const num = Number(String(data.ring.value).replace(/[^0-9.]/g, ''));
       if (!Number.isNaN(num) && num > 0) animateNum($('sc-num'), num, 900);
     } catch (e) {
