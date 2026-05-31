@@ -26,12 +26,74 @@
 
   const $ = (id) => document.getElementById(id);
 
+  let lastReportedHeight = 0;
+  let resizeTimer;
+  let burstGen = 0;
+  const IN_IFRAME = window.parent !== window;
+  const HAS_FRAME = IN_IFRAME && !!window.frameElement;
+
+  function measureToolHeight() {
+    const card = root.querySelector('.snap-card');
+    if (card) {
+      return Math.ceil(card.offsetTop + card.offsetHeight + 36);
+    }
+    return Math.ceil(Math.max(root.offsetHeight, root.scrollHeight));
+  }
+
+  function applyIframeHeight(h) {
+    const px = Math.min(Math.max(300, Math.round(h)), 6400) + 'px';
+    const frame = window.frameElement;
+    if (frame) {
+      frame.style.setProperty('height', px, 'important');
+      frame.style.setProperty('max-height', 'none', 'important');
+      frame.style.setProperty('min-height', '0', 'important');
+      frame.setAttribute('scrolling', 'no');
+      const wrap = frame.parentElement;
+      if (wrap) {
+        wrap.style.setProperty('overflow', 'visible', 'important');
+        wrap.style.setProperty('max-height', 'none', 'important');
+      }
+    }
+    if (IN_IFRAME) {
+      window.parent.postMessage({ type: 'snap-tools-resize', height: h }, '*');
+    }
+  }
+
+  function notifyParentHeight() {
+    if (!IN_IFRAME) return;
+
+    const h = measureToolHeight();
+    if (!h || h < 220) return;
+    if (Math.abs(h - lastReportedHeight) < 6) return;
+
+    lastReportedHeight = h;
+    applyIframeHeight(h);
+  }
+
+  function scheduleHeightNotify() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(notifyParentHeight, 80);
+  }
+
+  function scheduleHeightBurst() {
+    if (!IN_IFRAME) return;
+    const gen = ++burstGen;
+    notifyParentHeight();
+    [120, 320, 600, 1000, 1600].forEach((ms) => {
+      setTimeout(() => {
+        if (gen !== burstGen) return;
+        notifyParentHeight();
+      }, ms);
+    });
+  }
+
   root.querySelectorAll('.tab').forEach((btn) => {
     btn.addEventListener('click', () => {
       root.querySelectorAll('.tab').forEach((b) => b.classList.remove('active'));
       root.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
       btn.classList.add('active');
       $('panel-' + btn.dataset.tab).classList.add('active');
+      setTimeout(scheduleHeightBurst, 80);
     });
   });
 
@@ -146,6 +208,7 @@
     videoState.selectedUrl = best.url;
     $('dl-main-btn').textContent =
       'Download ' + best.label + (best.size ? ' - ' + best.size : '');
+    scheduleHeightBurst();
   }
 
   function showVideoPreview(video) {
@@ -168,8 +231,11 @@
     }
     player.src = video.mediaUrl;
     player.poster = video.previewUrl || '';
+    wrap.classList.add('has-video');
+    player.addEventListener('loadedmetadata', scheduleHeightBurst, { once: true });
     $('v-title').textContent =
       video.collectionTitle || '@' + (video.username || 'snapchat');
+    scheduleHeightBurst();
   }
 
   $('v-paste').addEventListener('click', async () => {
@@ -231,6 +297,7 @@
       errShow('v-err', e.message || 'API error. Check backend URL.');
     } finally {
       loaderOff('v-load');
+      scheduleHeightBurst();
     }
   }
 
@@ -285,6 +352,7 @@
       errShow('p-err', e.message);
     } finally {
       loaderOff('p-load');
+      scheduleHeightBurst();
     }
   }
 
@@ -352,6 +420,7 @@
       errShow('sc-err', e.message);
     } finally {
       loaderOff('sc-load');
+      scheduleHeightBurst();
     }
   }
 
@@ -414,57 +483,49 @@
       errShow('st-err', e.message);
     } finally {
       loaderOff('st-load');
+      scheduleHeightBurst();
     }
   }
 
   $('st-btn').addEventListener('click', doStory);
   $('st-user').addEventListener('keydown', (e) => e.key === 'Enter' && doStory());
 
-  let lastReportedHeight = 0;
+  function initIframeSync() {
+    document.documentElement.classList.add('snap-iframe');
+    root.classList.add(HAS_FRAME ? 'snap-frame-resize' : 'snap-postmessage-resize');
 
-  function measureToolHeight() {
-    const rect = root.getBoundingClientRect();
-    const top = rect.top + window.scrollY;
-    const bottom = rect.bottom + window.scrollY;
-    return Math.ceil(bottom - top + 2);
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'snap-tools-request-height') scheduleHeightNotify();
+    });
+
+    scheduleHeightNotify();
+
+    const card = root.querySelector('.snap-card');
+    if (card && typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(scheduleHeightNotify).observe(card);
+    }
+
+    if (typeof MutationObserver !== 'undefined') {
+      const mo = new MutationObserver(scheduleHeightNotify);
+      ['v-result', 'p-result', 'sc-result', 'st-grid', 'quality-grid'].forEach((id) => {
+        const el = $(id);
+        if (el) {
+          mo.observe(el, {
+            attributes: true,
+            attributeFilter: ['class', 'style'],
+            childList: true,
+            subtree: true,
+          });
+        }
+      });
+    }
   }
 
-  function notifyParentHeight() {
-    if (window.parent === window) return;
-
-    document.documentElement.style.height = 'auto';
-    document.body.style.height = 'auto';
-
-    const h = measureToolHeight();
-    if (!h || h < 200 || Math.abs(h - lastReportedHeight) < 2) return;
-
-    lastReportedHeight = h;
-    window.parent.postMessage({ type: 'snap-tools-resize', height: h }, '*');
+  if (IN_IFRAME) {
+    if (typeof requestIdleCallback === 'function') {
+      requestIdleCallback(initIframeSync, { timeout: 400 });
+    } else {
+      setTimeout(initIframeSync, 1);
+    }
   }
-
-  let resizeTimer;
-  function scheduleHeightNotify() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(notifyParentHeight, 60);
-  }
-
-  window.addEventListener('message', (e) => {
-    if (e.data && e.data.type === 'snap-tools-request-height') notifyParentHeight();
-  });
-
-  function bootHeightSync() {
-    notifyParentHeight();
-    requestAnimationFrame(notifyParentHeight);
-  }
-
-  bootHeightSync();
-  if (document.readyState === 'complete') bootHeightSync();
-  else window.addEventListener('load', bootHeightSync, { once: true });
-  window.addEventListener('resize', scheduleHeightNotify);
-  if (typeof ResizeObserver !== 'undefined') {
-    new ResizeObserver(scheduleHeightNotify).observe(root);
-  }
-  root.querySelectorAll('.tab').forEach((btn) => {
-    btn.addEventListener('click', () => setTimeout(scheduleHeightNotify, 450));
-  });
 })();

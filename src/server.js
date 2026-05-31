@@ -26,7 +26,7 @@ app.use(express.json());
 app.use('/api', apiRouter);
 
 /* Frontend tool (HTML/CSS/JS) — WordPress sirf iframe se embed kare */
-app.use(express.static(publicDir));
+app.use(express.static(publicDir, { maxAge: '7d', etag: true }));
 app.get('/tool', (_req, res) => {
   res.sendFile(path.join(publicDir, 'index.html'));
 });

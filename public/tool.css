@@ -1,11 +1,10 @@
-html:has(#snap-tools),
-html:has(#snap-tools) body {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  height: auto;
-  min-height: 0;
+.snap-tools-embed {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
   background: #0c0f14;
+  overflow: visible;
 }
 
 .snap-tools {
@@ -33,13 +32,10 @@ html:has(#snap-tools) body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color: var(--text);
   background: var(--bg-dark);
-  background-image:
-    radial-gradient(ellipse 80% 60% at 70% 20%, rgba(252, 193, 1, 0.22), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 10% 80%, rgba(252, 193, 1, 0.08), transparent 50%);
   box-sizing: border-box;
 }
 
@@ -56,49 +52,7 @@ html:has(#snap-tools) body {
   box-sizing: border-box;
 }
 
-/* ── Hero ── */
-.snap-tools .snap-hero {
-  text-align: center;
-  width: 100%;
-  max-width: 920px;
-  margin: 0 auto 28px;
-  padding: 0 12px;
-}
-
-.snap-tools .snap-hero-title {
-  margin: 0 0 8px;
-  font-size: clamp(1.35rem, 4vw, 2.15rem);
-  font-weight: 800;
-  line-height: 1.25;
-  color: #fff;
-  letter-spacing: -0.02em;
-}
-
-.snap-tools .snap-hero-tag {
-  margin: 0;
-  font-size: clamp(1.1rem, 3vw, 1.65rem);
-  font-weight: 800;
-  color: #fff;
-}
-
 /* ── White card ── */
-.snap-tools:not(.snap-ready) .snap-card {
-  min-height: 200px;
-  background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 50%, #f1f5f9 100%);
-  background-size: 200% 100%;
-  animation: snapShimmer 1s ease-in-out infinite;
-}
-
-.snap-tools.snap-ready .snap-card {
-  animation: none;
-  background: var(--card);
-}
-
-@keyframes snapShimmer {
-  0% { background-position: 100% 0; }
-  100% { background-position: -100% 0; }
-}
-
 .snap-tools .snap-card {
   width: 100%;
   max-width: 960px;
@@ -348,6 +302,13 @@ html:has(#snap-tools) body {
   justify-content: center;
   gap: 10px;
   overflow: hidden;
+}
+
+.snap-tools .vid-preview.has-video {
+  aspect-ratio: auto;
+  min-height: 0;
+  padding: 0;
+  gap: 0;
 }
 
 .snap-tools .play-ring {
@@ -705,19 +666,6 @@ html:has(#snap-tools) body {
   .snap-tools {
     padding: 32px 12px 36px;
     justify-content: center;
-  }
-
-  .snap-tools .snap-hero {
-    margin-bottom: 16px;
-    padding: 0 8px;
-  }
-
-  .snap-tools .snap-hero-title {
-    font-size: 1.15rem;
-  }
-
-  .snap-tools .snap-hero-tag {
-    font-size: 1rem;
   }
 
   .snap-tools .snap-card {
