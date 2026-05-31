@@ -418,4 +418,24 @@
 
   $('st-btn').addEventListener('click', doStory);
   $('st-user').addEventListener('keydown', (e) => e.key === 'Enter' && doStory());
+
+  function notifyParentHeight() {
+    if (window.parent === window) return;
+    const h = Math.max(
+      document.documentElement.scrollHeight,
+      document.body.scrollHeight,
+      root.offsetHeight || 0
+    );
+    window.parent.postMessage({ type: 'snap-tools-resize', height: h + 32 }, '*');
+  }
+
+  notifyParentHeight();
+  window.addEventListener('load', notifyParentHeight);
+  window.addEventListener('resize', notifyParentHeight);
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(notifyParentHeight).observe(root);
+  }
+  root.querySelectorAll('.tab').forEach((btn) => {
+    btn.addEventListener('click', () => setTimeout(notifyParentHeight, 350));
+  });
 })();
